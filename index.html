@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title> Nexus AI</title>
+    <style>
+        body { background-color: #121212; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        #chat-box { width: 400px; height: 500px; border: 1px solid #333; padding: 20px; overflow-y: auto; background: #1e1e1e; border-radius: 10px; }
+        .input-area { margin-top: 20px; display: flex; gap: 10px; }
+        input { padding: 10px; border-radius: 5px; border: none; width: 250px; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Nexus AI Chat</h1>
+    <div id="chat-box"></div>
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="Savol yozing...">
+        <button onclick="send()">Yuborish</button>
+    </div>
+
+    <script>
+        async function send() {
+            let input = document.getElementById("userInput");
+            let chatBox = document.getElementById("chat-box");
+            if(!input.value) return;
+
+            chatBox.innerHTML += `<p><b>Siz:</b> ${input.value}</p>`;
+            
+            let response = await fetch('/ask', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({text: input.value})
+            });
+            let data = await response.json();
+            chatBox.innerHTML += `<p style="color: #00ffcc"><b>AI:</b> ${data.reply}</p>`;
+            input.value = "";
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
+</body>
+</html>
